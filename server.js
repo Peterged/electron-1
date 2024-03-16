@@ -13,8 +13,8 @@ const PORT = process.env.PORT || 3000;
 // Set up the Express App
 expressApp.use(express.static(__dirname + "/resources"));
 expressApp.use(cors(), compression());
-expressApp.use(express.urlencoded({ 
-    extended: true 
+expressApp.use(express.urlencoded({
+    extended: true
 }));
 expressApp.set('views', __dirname + '/resources/views');
 expressApp.set('view engine', 'ejs');
@@ -24,8 +24,8 @@ const AuthRouter = require('./app/Routers/AuthRouter');
 const HomeRouter = require('./app/Routers/HomeRouter');
 
 // Use Routers
-expressApp.use(AuthRouter);
-expressApp.use(HomeRouter);
+expressApp.use("/", AuthRouter);
+expressApp.use("/", HomeRouter);
 
 
 expressApp.listen(PORT, () => {

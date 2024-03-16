@@ -15,14 +15,16 @@ function createWindow() {
     mainWindow = new BrowserWindow({
         width: 1200,
         height: 900,
+        title: 'Tooltorch App',
         minHeight: 600,
         minWidth: 800,
         webPreferences: {
             nodeIntegration: true
         }
     });
+    mainWindow.maximize();
 
-    mainWindow.loadURL(`http://localhost:${PORT}`);
+    mainWindow.loadURL(`https://discord.com`);
 
     mainWindow.on('closed', () => {
         mainWindow = null;
