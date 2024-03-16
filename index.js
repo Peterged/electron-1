@@ -24,7 +24,7 @@ function createWindow() {
     });
     mainWindow.maximize();
 
-    mainWindow.loadURL(`https://discord.com`);
+    mainWindow.loadURL(`http://localhost:${PORT}`);
 
     mainWindow.on('closed', () => {
         mainWindow = null;
