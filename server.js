@@ -2,10 +2,11 @@ const express = require("express");
 const cors = require("cors");
 const compression = require("compression");
 const session = require("express-session");
+const helmet = require('helmet');
 require("dotenv").config();
 
 // MongoDB Connection
-require("./config/mongodb");
+// require("./config/mongodb");
 
 // Create an Express App
 const expressApp = express();
@@ -15,6 +16,7 @@ const SESSION_SECRET = process.env.SESSION_SECRET;
 // Set up the Express App
 expressApp.use(express.static(__dirname + "/resources"));
 expressApp.use(cors(), compression());
+// expressApp.use(helmet());
 expressApp.use(
   express.urlencoded({
     extended: true,

@@ -6,13 +6,13 @@ const { body, validationResult } = require('express-validator');
     emailValidator = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 */
 const signUpValidation = [
-    body('fullName')
+    body('username')
     .trim()
     .isLength({ min: 4 })
-    .withMessage('Full name must be 4 characters or above')
+    .withMessage('Username must be 4 characters or above')
     .bail()
     .notEmpty()
-    .withMessage('Full name is required'),
+    .withMessage('Username is required'),
 
     body('email')
     .trim()
@@ -22,21 +22,41 @@ const signUpValidation = [
     .notEmpty()
     .withMessage('Email is required'),
 
-    body('role')
-    .trim()
-    .isIn(['normal', 'admin'])
-    .withMessage('Invalid role')
-    .bail()
-    .notEmpty()
-    .withMessage('Role is required'),
+    // body('role')
+    // .trim()
+    // .isIn(['normal', 'admin'])
+    // .withMessage('Invalid role')
+    // .bail()
+    // .notEmpty()
+    // .withMessage('Role is required'),
 
     body('password')
     .trim()
     .isLength({ min: 6 })
     .withMessage('Password must be 6 characters or above')
+    .custom(async(value, { req }) => {
+        if (value !== req.body.confirmPassword) {
+            throw new Error('Password confirmation does not match password');
+        }
+        return true;
+    })
     .bail()
     .notEmpty()
-    .withMessage('Password is required')
+    .withMessage('Password is required'),
+
+    body('confirmPassword')
+    .trim()
+    .isLength({ min: 6 })
+    .withMessage('Confirm Password must be 6 characters or above')
+    .custom(async(value, { req }) => {
+        if (value !== req.body.password) {
+            throw new Error('Password confirmation does not match password');
+        }
+        return true;
+    })
+    .bail()
+    .notEmpty()
+    .withMessage('Confirm Password is required')
 ]
 
 module.exports = signUpValidation;

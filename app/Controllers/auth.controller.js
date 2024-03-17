@@ -1,6 +1,13 @@
 let jwt = require("jsonwebtoken");
 let bcrypt = require("bcrypt");
 let User = require("../Models/User");
+require('dotenv').config();
+
+// Import Libraries
+const axios = require('axios');
+
+// Import Services
+const mailService = require("../Services/mail.service");
 
 // Import Validator
 const { body, validationResult } = require("express-validator");
@@ -60,11 +67,7 @@ class AuthController {
    * @param {Response} res
    */
   signinRender(req, res) {
-    const errors = req.session.errors;
-    const formData = req.session.formData;
-    
-    req.session.errors = null;
-    req.session.formData = null;
+    let errors, formData;
     res.render("auth/login", { errors, formData });
   }
 
@@ -73,15 +76,11 @@ class AuthController {
    * @param {Request} req
    * @param {Response} res
    */
-  signin(req, res, next) {
+  signin(req, res) {
     const errors = validationResult(req);
 
     if (!errors.isEmpty()) {
-      req.session.errors = errors.mapped();
-      req.session.formData = req.body;
-
-      console.log('damn');
-      res.redirect("/login");
+      res.render('auth/login', { errors: errors.mapped(), formData: req.body })
     } else {
       User.findOne({
         email: req.body.email,
@@ -129,6 +128,71 @@ class AuthController {
           accessToken: token,
         });
       });
+    }
+  }
+
+  /**
+   * 
+   * @param {Request} req 
+   * @param {Response} res 
+   */
+  forgetPasswordRender(req, res) {
+    let errors, formData;
+    res.render('auth/forget-password', { errors, formData })
+  }
+
+  /**
+   * 
+   * @param {Request} req 
+   * @param {Response} res 
+   */
+  forgetPassword(req, res) {
+    const errors = validationResult(req);
+    let formData = req.body;
+
+    if(!errors.isEmpty()) {
+        res.render('auth/forget-password', { errors: errors.mapped(), formData: req.body })
+    }
+    else {
+        let success = new mailService().sendResetPasswordEmail(req.body.email, 'https://youtube.com/');
+        if(success) {
+            res.redirect('auth/confirm-code');
+        }
+        else {
+            res.render('auth/forget-password', { errors: { email: { msg: 'Email not found' } }, formData: req.body })
+        }
+        
+    }
+    }
+
+
+    /**
+    * GET
+    * @param {Request} req 
+    * @param {Response} res 
+    */
+    confirmCodeRender(req, res) {
+        const errors = validationResult(req) || {};
+        let formData = req.body || {};
+
+        if(!errors.isEmpty()) {
+            errors = errors.mapped();
+        }
+        else {
+            res.render('auth/confirm-code', { errors, formData });
+        }
+    }
+
+  /**
+   * POST
+   * @param {Request} req 
+   * @param {Response} res 
+   */
+  confirmCode(req, res) {
+    const errors = validationResult(req) || {};
+
+    if(!errors.isEmpty()) {
+        
     }
   }
 }
