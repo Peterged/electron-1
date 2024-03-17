@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const csrf = require('csurf');
 
 // Import Express Validator
 const { body, validationResult } = require('express-validator');
@@ -25,11 +26,11 @@ router.post('/login', signInValidation,  AuthController.signin);
 
 // Forget Password
 router.get('/forget-password', AuthController.forgetPasswordRender);
-router.post('/forget-password', forgetPasswordValidation, AuthController.forgetPassword);
+router.post('/forget-password', csrf(), forgetPasswordValidation, AuthController.forgetPassword);
 
 // Confirm Reset Password
 router.get('/confirm-code', confirmCodeValidation, AuthController.confirmCodeRender);
-router.post('/confirm-code', confirmCodeInputValidation, AuthController.confirmCode);
+router.post('/confirm-code', csrf(), confirmCodeInputValidation, AuthController.confirmCode);
 
 // Export Router
 module.exports = router;

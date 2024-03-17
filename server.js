@@ -3,6 +3,7 @@ const cors = require("cors");
 const compression = require("compression");
 const session = require("express-session");
 const helmet = require('helmet');
+const csrf = require('csurf');
 require("dotenv").config();
 
 // MongoDB Connection
